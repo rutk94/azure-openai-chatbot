@@ -1,3 +1,5 @@
+from typing import Optional
+
 from src.chatbotmanager import ChatbotManager
 from setup import (
     AZURE_OPENAI_API_KEY,
@@ -23,13 +25,13 @@ def main():
 
     user_prompt: str = ''
     while not user_prompt == 'exit':
-        user_prompt: str = str(input('Prompt: '))
-        response: str = chat.get_response(prompt=user_prompt)
+        user_prompt = str(input('Prompt: '))
+        response: Optional[str] = chat.get_response(prompt=user_prompt)
         tokens_amount: int = chat.get_tokens(input=user_prompt)
 
         print(f'Tokens amount: {tokens_amount}')
         print(f'Assistant: {response}')
-        print('-'*50, '\n')
+        print('-' * 50, '\n')
 
 
 if __name__ == '__main__':
