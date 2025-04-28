@@ -2,7 +2,7 @@ from typing import Optional
 from tiktoken import get_encoding
 from tiktoken.core import Encoding
 from openai import AzureOpenAI
-from openai.types.chat import ChatCompletion
+from openai.types.chat import ChatCompletion, ChatCompletionMessage
 
 from setup import (
     AZURE_OPENAI_API_KEY,
@@ -12,6 +12,7 @@ from setup import (
     TIKTOKEN_MODEL,
     MAX_TOKENS,
     TEMPERATURE,
+    SYSTEM_MESSAGE,
 )
 
 class ChatbotManager:
@@ -22,18 +23,22 @@ class ChatbotManager:
             api_version=AZURE_OPENAI_API_VERSION,
         )
         self.encoding: Encoding = get_encoding(TIKTOKEN_MODEL)
+        self.messages: list[dict[str, str]] = [
+            {'role': 'system', 'content': SYSTEM_MESSAGE}
+        ]
 
     def get_response(self, prompt: str) -> Optional[str]:
+        self.messages.append({'role': 'user', 'content': prompt})
         completion: ChatCompletion = self.client.chat.completions.create(
             model=AZURE_OPENAI_MODEL,
-            messages=[
-                {'role': 'system', 'content': 'You are a helpfull assistant.'},
-                {'role': 'user', 'content': prompt}
-            ],
+            messages=self.messages,
             max_tokens=MAX_TOKENS,
             temperature=TEMPERATURE,
         )
-        response: Optional[str] = completion.choices[0].message.content
+        message: ChatCompletionMessage = completion.choices[0].message
+        self.messages.append({'role': message.role, 'content': message.content})
+
+        response: Optional[str] = message.content
         return response
 
     def get_tokens(self, input: str) -> int:

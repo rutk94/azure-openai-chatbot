@@ -19,3 +19,4 @@ MAX_TOKENS: Optional[int] = (
 TEMPERATURE: Optional[float] = (
     float(str(os.getenv('TEMPERATURE'))) if os.getenv('TEMPERATURE') else None
 )
+SYSTEM_MESSAGE: str = get_var_type_or_die('SYSTEM_MESSAGE', str, default='You are a helpful assistant.')
