@@ -2,27 +2,10 @@ import streamlit as st
 from typing import Optional
 
 from src.chatbotmanager import ChatbotManager
-from setup import (
-    AZURE_OPENAI_API_KEY,
-    AZURE_OPENAI_API_VERSION,
-    AZURE_OPENAI_MODEL,
-    AZURE_OPENAI_API_ENDPOINT,
-    TIKTOKEN_MODEL,
-    MAX_TOKENS,
-    TEMPERATURE,
-)
 
 
 def main():
-    chat: ChatbotManager = ChatbotManager(
-        api_key=AZURE_OPENAI_API_KEY,
-        api_version=AZURE_OPENAI_API_VERSION,
-        model=AZURE_OPENAI_MODEL,
-        endpoint=AZURE_OPENAI_API_ENDPOINT,
-        tiktoken_model=TIKTOKEN_MODEL,
-        max_tokens=MAX_TOKENS,
-        temperature=TEMPERATURE,
-    )
+    chat: ChatbotManager = ChatbotManager()
 
     # Streamlit App
     st.title("Chatbot App")  # Add a title

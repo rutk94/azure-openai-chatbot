@@ -4,41 +4,34 @@ from tiktoken.core import Encoding
 from openai import AzureOpenAI
 from openai.types.chat import ChatCompletion
 
-class ChatbotManager:
-    def __init__(
-        self,
-        api_key: str,
-        api_version: str,
-        model: str,
-        endpoint: str,
-        tiktoken_model: str,
-        max_tokens: Optional[int] = 4096,
-        temperature: Optional[float] = 0.1,
-    ) -> None:
-        self._api_key: str = api_key
-        self.api_version: str = api_version
-        self.model: str = model
-        self.endpoint: str = endpoint
-        self.tiktoken_model: str = tiktoken_model
-        self.max_tokens: Optional[int] = max_tokens
-        self.temperature: Optional[float] = temperature
+from setup import (
+    AZURE_OPENAI_API_KEY,
+    AZURE_OPENAI_API_VERSION,
+    AZURE_OPENAI_MODEL,
+    AZURE_OPENAI_API_ENDPOINT,
+    TIKTOKEN_MODEL,
+    MAX_TOKENS,
+    TEMPERATURE,
+)
 
+class ChatbotManager:
+    def __init__(self) -> None:
         self.client: AzureOpenAI = AzureOpenAI(
-            azure_endpoint=self.endpoint,
-            api_key=self._api_key,
-            api_version=self.api_version,
+            azure_endpoint=AZURE_OPENAI_API_ENDPOINT,
+            api_key=AZURE_OPENAI_API_KEY,
+            api_version=AZURE_OPENAI_API_VERSION,
         )
-        self.encoding: Encoding = get_encoding(self.tiktoken_model)
+        self.encoding: Encoding = get_encoding(TIKTOKEN_MODEL)
 
     def get_response(self, prompt: str) -> Optional[str]:
         completion: ChatCompletion = self.client.chat.completions.create(
-            model=self.model,
+            model=AZURE_OPENAI_MODEL,
             messages=[
-                {'role': 'system', 'content': 'You are a helpful assistant.'},
-                {'role': 'user', 'content': prompt},
+                {'role': 'system', 'content': 'You are a helpfull assistant.'},
+                {'role': 'user', 'content': prompt}
             ],
-            max_tokens=self.max_tokens,
-            temperature=self.temperature,
+            max_tokens=MAX_TOKENS,
+            temperature=TEMPERATURE,
         )
         response: Optional[str] = completion.choices[0].message.content
         return response
